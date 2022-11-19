@@ -61,6 +61,11 @@ namespace Microsoft.Exchange.WebServices.Data
         /// </summary>
         private static string defaultUserAgent = "ExchangeServicesClient/" + EwsUtilities.BuildVersion;
 
+        /// <summary>
+        /// Track the last ClientRequestId so that we don't prepare a request with the same value twice
+        /// </summary>
+        private static string lastClientRequestId = "";
+
         #endregion
 
         #region Fields        
@@ -153,13 +158,12 @@ namespace Microsoft.Exchange.WebServices.Data
                 request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip,deflate");
             }
 
-            if (!string.IsNullOrEmpty(this.clientRequestId))
+            if (this.returnClientRequestId)                
             {
+                if (string.IsNullOrEmpty(this.clientRequestId) || this.clientRequestId.Equals(lastClientRequestId))
+                    this.clientRequestId = Guid.NewGuid().ToString();
                 request.Headers.Add("client-request-id", this.clientRequestId);
-                if (this.returnClientRequestId)
-                {
-                    request.Headers.Add("return-client-request-id", "true");
-                }
+                request.Headers.Add("return-client-request-id", "true");
             }
 
             if (this.webProxy != null)
