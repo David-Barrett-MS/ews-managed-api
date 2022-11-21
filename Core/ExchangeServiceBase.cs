@@ -277,7 +277,7 @@ namespace Microsoft.Exchange.WebServices.Data
             if (this.IsTraceEnabledFor(traceType))
             {
                 string traceTypeStr = traceType.ToString();
-                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, logEntry);
+                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, logEntry, this.ClientRequestId);
                 this.TraceListener.Trace(traceTypeStr, logMessage);
             }
         }
@@ -291,8 +291,8 @@ namespace Microsoft.Exchange.WebServices.Data
         {
             if (this.IsTraceEnabledFor(traceType))
             {
-                string traceTypeStr = traceType.ToString();
-                string logMessage = EwsUtilities.FormatLogMessageWithXmlContent(traceTypeStr, stream);
+                string traceTypeStr = traceType.ToString();                
+                string logMessage = EwsUtilities.FormatLogMessageWithXmlContent(traceTypeStr, stream, this.ClientRequestId);
                 this.TraceListener.Trace(traceTypeStr, logMessage);
             }
         }
@@ -308,7 +308,7 @@ namespace Microsoft.Exchange.WebServices.Data
             {
                 string traceTypeStr = traceType.ToString();
                 string headersAsString = EwsUtilities.FormatHttpRequestHeaders(request);
-                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
+                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString, this.ClientRequestId);
                 this.TraceListener.Trace(traceTypeStr, logMessage);
             }
         }
@@ -336,7 +336,7 @@ namespace Microsoft.Exchange.WebServices.Data
             {
                 string traceTypeStr = traceType.ToString();
                 string headersAsString = EwsUtilities.FormatHttpResponseHeaders(response);
-                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
+                string logMessage = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString, this.ClientRequestId);
                 this.TraceListener.Trace(traceTypeStr, logMessage);
             }
         }

@@ -396,17 +396,21 @@ namespace Microsoft.Exchange.WebServices.Data
         /// </summary>
         /// <param name="writer">The writer to write the start element to.</param>
         /// <param name="traceTag">The trace tag.</param>
+        /// <param name="clientRequestId">The client-request-id.</param>
         /// <param name="includeVersion">If true, include build version attribute.</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Exchange.Usage", "EX0009:DoNotUseDateTimeNowOrFromFileTime", Justification = "Client API")]
         private static void WriteTraceStartElement(
             XmlWriter writer,
             string traceTag,
+            string clientRequestId,
             bool includeVersion)
         {
             writer.WriteStartElement("Trace");
             writer.WriteAttributeString("Tag", traceTag);
             writer.WriteAttributeString("Tid", Thread.CurrentThread.ManagedThreadId.ToString());
             writer.WriteAttributeString("Time", DateTime.UtcNow.ToString("O", DateTimeFormatInfo.InvariantInfo));
+            if (!string.IsNullOrEmpty(clientRequestId))
+                writer.WriteAttributeString("ClientRequestId", clientRequestId);
 
             if (includeVersion)
             {
@@ -419,8 +423,9 @@ namespace Microsoft.Exchange.WebServices.Data
         /// </summary>
         /// <param name="entryKind">Kind of the entry.</param>
         /// <param name="logEntry">The log entry.</param>
+        /// <param name="clientRequestId">The client-request-id.</param>
         /// <returns>XML log entry as a string.</returns>
-        internal static string FormatLogMessage(string entryKind, string logEntry)
+        internal static string FormatLogMessage(string entryKind, string logEntry, string clientRequestId = "")
         {
             StringBuilder sb = new StringBuilder();
             using (StringWriter writer = new StringWriter(sb))
@@ -429,7 +434,7 @@ namespace Microsoft.Exchange.WebServices.Data
                 {
                     xmlWriter.Formatting = Formatting.Indented;
 
-                    EwsUtilities.WriteTraceStartElement(xmlWriter, entryKind, false);
+                    EwsUtilities.WriteTraceStartElement(xmlWriter, entryKind, clientRequestId, false);
 
                     xmlWriter.WriteWhitespace(Environment.NewLine);
                     xmlWriter.WriteValue(logEntry);
@@ -536,7 +541,7 @@ namespace Microsoft.Exchange.WebServices.Data
         /// <param name="entryKind">Kind of the entry.</param>
         /// <param name="memoryStream">The memory stream.</param>
         /// <returns>XML log entry as a string.</returns>
-        internal static string FormatLogMessageWithXmlContent(string entryKind, MemoryStream memoryStream)
+        internal static string FormatLogMessageWithXmlContent(string entryKind, MemoryStream memoryStream, string clientRequestId = "")
         {
             StringBuilder sb = new StringBuilder();
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -561,7 +566,7 @@ namespace Microsoft.Exchange.WebServices.Data
                         {
                             xmlWriter.Formatting = Formatting.Indented;
 
-                            EwsUtilities.WriteTraceStartElement(xmlWriter, entryKind, true);
+                            EwsUtilities.WriteTraceStartElement(xmlWriter, entryKind, clientRequestId, true);
 
                             while (!reader.EOF)
                             {
