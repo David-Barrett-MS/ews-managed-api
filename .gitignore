@@ -184,3 +184,4 @@ UpgradeLog*.htm
 FakesAssemblies/
 /.vs/slnx.sqlite
 /.vs/Microsoft.Exchange.WebServices.Data/v17
+/.vs/Microsoft.Exchange.WebServices.Data/FileContentIndex
